@@ -14,7 +14,7 @@
 	<meta name="x-icue-property" content="mutedColor" data-label="tr('Secondary Text Color')"
 		data-type="color" data-default="'#8B93A1'" />
 	<meta name="x-icue-property" content="backgroundColor" data-label="tr('Background Color')"
-		data-type="color" data-default="'transparent'" />
+		data-type="color" data-default="'rgba(10,10,16,0.45)'" />
 	<meta name="x-icue-property" content="showTransliteration" data-label="tr('Show Transliteration')"
 		data-type="switch" data-default="true" />
 	<meta name="x-icue-property" content="showMeaning" data-label="tr('Show English Meaning')"
@@ -235,7 +235,7 @@
 			const text = getIcueProperty("textColor") || "#FFFFFF";
 			const accent = getIcueProperty("accentColor") || "#4F8EF7";
 			const muted = getIcueProperty("mutedColor") || "#8B93A1";
-			const bg = getIcueProperty("backgroundColor") || "transparent";
+			const bg = getIcueProperty("backgroundColor") || "rgba(10,10,16,0.45)";
 			const root = document.documentElement;
 			root.style.setProperty("--text", text);
 			root.style.setProperty("--accent", accent);
