@@ -14,7 +14,7 @@
 	<meta name="x-icue-property" content="mutedColor" data-label="tr('Secondary Text Color')"
 		data-type="color" data-default="'#8B93A1'" />
 	<meta name="x-icue-property" content="backgroundColor" data-label="tr('Background Color')"
-		data-type="color" data-default="'rgba(10,10,16,0.45)'" />
+		data-type="color" data-default="'#15151C'" />
 	<meta name="x-icue-property" content="showTransliteration" data-label="tr('Show Transliteration')"
 		data-type="switch" data-default="true" />
 	<meta name="x-icue-property" content="showMeaning" data-label="tr('Show English Meaning')"
@@ -49,7 +49,10 @@
 			padding: clamp(10px, 4vh, 24px) clamp(14px, 6vw, 32px);
 			text-align: center;
 			border-radius: clamp(8px, 2vh, 16px);
-			background: var(--bg, transparent);
+			background:
+				radial-gradient(ellipse at 22% 0%, rgba(79, 142, 247, 0.10), transparent 55%),
+				var(--bg, #15151C);
+			border: 1px solid rgba(255, 255, 255, 0.08);
 			color: var(--text, #FFFFFF);
 			font-family: "Segoe UI", Tahoma, sans-serif;
 		}
@@ -235,7 +238,7 @@
 			const text = getIcueProperty("textColor") || "#FFFFFF";
 			const accent = getIcueProperty("accentColor") || "#4F8EF7";
 			const muted = getIcueProperty("mutedColor") || "#8B93A1";
-			const bg = getIcueProperty("backgroundColor") || "rgba(10,10,16,0.45)";
+			const bg = getIcueProperty("backgroundColor") || "#15151C";
 			const root = document.documentElement;
 			root.style.setProperty("--text", text);
 			root.style.setProperty("--accent", accent);
