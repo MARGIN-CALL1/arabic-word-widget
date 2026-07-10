@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>tr('Palestinian Word of the Day')</title>
+	<link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
+
+	<meta name="x-icue-widget-group" content="tr('Palestinian Word of the Day')" />
+
+	<meta name="x-icue-property" content="textColor" data-label="tr('Primary Text Color')"
+		data-type="color" data-default="'#FFFFFF'" />
+	<meta name="x-icue-property" content="accentColor" data-label="tr('Accent Color')"
+		data-type="color" data-default="'#4F8EF7'" />
+	<meta name="x-icue-property" content="mutedColor" data-label="tr('Secondary Text Color')"
+		data-type="color" data-default="'#8B93A1'" />
+	<meta name="x-icue-property" content="backgroundColor" data-label="tr('Background Color')"
+		data-type="color" data-default="'#15151C'" />
+	<meta name="x-icue-property" content="showTransliteration" data-label="tr('Show Transliteration')"
+		data-type="switch" data-default="true" />
+	<meta name="x-icue-property" content="showMeaning" data-label="tr('Show English Meaning')"
+		data-type="switch" data-default="true" />
+
+	<script type="application/json" id="x-icue-groups">
+		[
+			{ "title": "tr('Appearance')", "properties": ["textColor", "accentColor", "mutedColor", "backgroundColor"] },
+			{ "title": "tr('Content')", "properties": ["showTransliteration", "showMeaning"] }
+		]
+	</script>
+
+	<style>
+		* { box-sizing: border-box; margin: 0; padding: 0; }
+
+		html, body {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			background: transparent;
+		}
+
+		#card {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: clamp(3px, 1.4vh, 10px);
+			padding: clamp(10px, 4vh, 24px) clamp(14px, 6vw, 32px);
+			text-align: center;
+			border-radius: clamp(8px, 2vh, 16px);
+			background:
+				radial-gradient(ellipse at 22% 0%, rgba(79, 142, 247, 0.10), transparent 55%),
+				var(--bg, #15151C);
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			color: var(--text, #FFFFFF);
+			font-family: "Segoe UI", Tahoma, sans-serif;
+		}
+
+		#label {
+			font-size: clamp(7px, 2.4vh, 12px);
+			letter-spacing: 0.14em;
+			text-transform: uppercase;
+			color: var(--muted, #8B93A1);
+			font-weight: 600;
+		}
+
+		#arabic {
+			direction: rtl;
+			font-family: "Traditional Arabic", "Arabic Typesetting", Tahoma, "Segoe UI", sans-serif;
+			font-size: clamp(22px, 13vh, 92px);
+			font-weight: 700;
+			line-height: 1.05;
+			color: var(--text, #FFFFFF);
+		}
+
+		#subline {
+			display: flex;
+			align-items: baseline;
+			justify-content: center;
+			gap: clamp(6px, 1.6vw, 12px);
+			font-size: clamp(9px, 3.6vh, 19px);
+		}
+
+		#translit {
+			color: var(--accent, #4F8EF7);
+			font-weight: 600;
+		}
+
+		#sep {
+			color: var(--muted, #8B93A1);
+			opacity: 0.5;
+			font-weight: 400;
+		}
+
+		#meaning {
+			color: var(--muted, #8B93A1);
+			font-weight: 400;
+		}
+	</style>
+</head>
+<body>
+	<div id="card">
+		<div id="label">Word of the Day &middot; Palestinian Arabic</div>
+		<div id="arabic">مرحبا</div>
+		<div id="subline">
+			<span id="translit">marḥaba</span>
+			<span id="sep">|</span>
+			<span id="meaning">hello</span>
+		</div>
+	</div>
+
+	<script>
+		// Colloquial Palestinian Arabic word bank: { ar: script, tr: dialect transliteration, en: meaning }
+		const WORDS = [
+			{ ar: "مرحبا", tr: "marḥaba", en: "hello" },
+			{ ar: "أهلا", tr: "ahlan", en: "welcome" },
+			{ ar: "كيفك", tr: "kīfak", en: "how are you" },
+			{ ar: "تمام", tr: "tamām", en: "great, okay" },
+			{ ar: "منيح", tr: "mnīḥ", en: "good" },
+			{ ar: "يلا", tr: "yalla", en: "let's go" },
+			{ ar: "شو", tr: "shū", en: "what" },
+			{ ar: "ليش", tr: "lēsh", en: "why" },
+			{ ar: "وين", tr: "wēn", en: "where" },
+			{ ar: "هلأ", tr: "hala'", en: "right now" },
+			{ ar: "بكرا", tr: "bukra", en: "tomorrow" },
+			{ ar: "مبارح", tr: "mbāreḥ", en: "yesterday" },
+			{ ar: "كتير", tr: "ktīr", en: "a lot, very" },
+			{ ar: "شوي", tr: "shwayy", en: "a little" },
+			{ ar: "زاكي", tr: "zākī", en: "delicious" },
+			{ ar: "حلو", tr: "ḥilu", en: "sweet, nice" },
+			{ ar: "بيت", tr: "bēt", en: "house" },
+			{ ar: "شباك", tr: "shbbāk", en: "window" },
+			{ ar: "سطح", tr: "saṭḥ", en: "rooftop" },
+			{ ar: "حارة", tr: "ḥāra", en: "neighborhood" },
+			{ ar: "عيلة", tr: "ʿēle", en: "family" },
+			{ ar: "تيتا", tr: "tēta", en: "grandma" },
+			{ ar: "سيدو", tr: "sīdo", en: "grandpa" },
+			{ ar: "جيران", tr: "jīrān", en: "neighbors" },
+			{ ar: "حبيبي", tr: "ḥabībi", en: "my dear" },
+			{ ar: "زعتر", tr: "zaʿtar", en: "za'atar" },
+			{ ar: "زيت", tr: "zēt", en: "oil" },
+			{ ar: "كنافة", tr: "knāfe", en: "kanafeh" },
+			{ ar: "مسخن", tr: "musakhan", en: "musakhan" },
+			{ ar: "مقلوبة", tr: "maqlūbe", en: "maqluba" },
+			{ ar: "طابون", tr: "ṭābūn", en: "clay oven" },
+			{ ar: "حمص", tr: "ḥummuṣ", en: "hummus" },
+			{ ar: "فلافل", tr: "falāfel", en: "falafel" },
+			{ ar: "لبنة", tr: "labane", en: "labneh" },
+			{ ar: "خبز", tr: "khubez", en: "bread" },
+			{ ar: "قهوة", tr: "ʾahwe", en: "coffee" },
+			{ ar: "شاي", tr: "shāy", en: "tea" },
+			{ ar: "سكر", tr: "sukkar", en: "sugar" },
+			{ ar: "زيتون", tr: "zaytūn", en: "olive" },
+			{ ar: "صبار", tr: "ṣabbār", en: "prickly pear" },
+			{ ar: "تين", tr: "tīn", en: "fig" },
+			{ ar: "عنب", tr: "ʿinab", en: "grapes" },
+			{ ar: "برتقال", tr: "burtuqāl", en: "orange" },
+			{ ar: "أرض", tr: "arḍ", en: "land" },
+			{ ar: "بلد", tr: "balad", en: "hometown" },
+			{ ar: "قرية", tr: "ʾarye", en: "village" },
+			{ ar: "جبل", tr: "jabal", en: "mountain" },
+			{ ar: "سما", tr: "sama", en: "sky" },
+			{ ar: "شمس", tr: "shams", en: "sun" },
+			{ ar: "قمر", tr: "ʾamar", en: "moon" },
+			{ ar: "نجمة", tr: "nijme", en: "star" },
+			{ ar: "مطر", tr: "maṭar", en: "rain" },
+			{ ar: "ريح", tr: "rīḥ", en: "wind" },
+			{ ar: "ربيع", tr: "rabīʿ", en: "spring" },
+			{ ar: "كوفية", tr: "kūfiyye", en: "keffiyeh" },
+			{ ar: "تطريز", tr: "taṭrīz", en: "embroidery" },
+			{ ar: "ثوب", tr: "thōb", en: "embroidered dress" },
+			{ ar: "صمود", tr: "ṣumūd", en: "steadfastness" },
+			{ ar: "عودة", tr: "ʿawde", en: "return" },
+			{ ar: "وطن", tr: "waṭan", en: "homeland" },
+			{ ar: "تراث", tr: "turāth", en: "heritage" },
+			{ ar: "دبكة", tr: "dabke", en: "folk dance" },
+			{ ar: "غنية", tr: "ghinniyye", en: "song" },
+			{ ar: "عرس", tr: "ʿirs", en: "wedding" },
+			{ ar: "عيد", tr: "ʿīd", en: "holiday" },
+			{ ar: "قلب", tr: "ʾalb", en: "heart" },
+			{ ar: "حلم", tr: "ḥilim", en: "dream" },
+			{ ar: "أمل", tr: "amal", en: "hope" },
+			{ ar: "فرح", tr: "faraḥ", en: "joy" },
+			{ ar: "ضحك", tr: "ḍaḥek", en: "laughter" },
+			{ ar: "صوت", tr: "ṣōt", en: "voice" },
+			{ ar: "رفيق", tr: "rafīʾ", en: "close friend" },
+			{ ar: "شغل", tr: "shughel", en: "work" },
+			{ ar: "مدرسة", tr: "madrase", en: "school" },
+			{ ar: "طريق", tr: "ṭarīʾ", en: "road" },
+			{ ar: "سيارة", tr: "sayyāra", en: "car" },
+			{ ar: "مدينة", tr: "madīne", en: "city" },
+			{ ar: "بسة", tr: "bisse", en: "cat" },
+			{ ar: "كلب", tr: "kalb", en: "dog" },
+			{ ar: "عصفور", tr: "ʿaṣfūr", en: "bird" },
+			{ ar: "حصان", tr: "ḥṣān", en: "horse" }
+		];
+
+		let lastDayIndex = -1;
+
+		function getDayIndex() {
+			const now = new Date();
+			const start = new Date(now.getFullYear(), 0, 0);
+			const diff = now - start;
+			const oneDay = 1000 * 60 * 60 * 24;
+			return Math.floor(diff / oneDay);
+		}
+
+		function getIcueProperty(name) {
+			if (typeof window !== "undefined" && Object.prototype.hasOwnProperty.call(window, name)) {
+				const value = window[name];
+				if (value !== undefined && value !== null && value !== "") return value;
+			}
+			try {
+				const value = Function('return typeof ' + name + ' !== "undefined" ? ' + name + ' : undefined')();
+				if (value !== undefined && value !== null && value !== "") return value;
+			} catch (e) {}
+			return undefined;
+		}
+
+		function renderWord() {
+			const dayIndex = getDayIndex();
+			lastDayIndex = dayIndex;
+			const word = WORDS[dayIndex % WORDS.length];
+
+			document.getElementById("arabic").textContent = word.ar;
+			document.getElementById("translit").textContent = word.tr;
+			document.getElementById("meaning").textContent = word.en;
+
+			const translitOn = getIcueProperty("showTransliteration");
+			const meaningOn = getIcueProperty("showMeaning");
+			document.getElementById("translit").style.display = (translitOn === false) ? "none" : "inline";
+			document.getElementById("meaning").style.display = (meaningOn === false) ? "none" : "inline";
+			document.getElementById("sep").style.display = (translitOn === false || meaningOn === false) ? "none" : "inline";
+		}
+
+		function applyStyle() {
+			const text = getIcueProperty("textColor") || "#FFFFFF";
+			const accent = getIcueProperty("accentColor") || "#4F8EF7";
+			const muted = getIcueProperty("mutedColor") || "#8B93A1";
+			const bg = getIcueProperty("backgroundColor") || "#15151C";
+			const root = document.documentElement;
+			root.style.setProperty("--text", text);
+			root.style.setProperty("--accent", accent);
+			root.style.setProperty("--muted", muted);
+			root.style.setProperty("--bg", bg);
+		}
+
+		function update() {
+			applyStyle();
+			renderWord();
+		}
+
+		function init() {
+			applyStyle();
+			renderWord();
+			// Re-check once a minute so the word rolls over automatically at midnight
+			setInterval(function () {
+				if (getDayIndex() !== lastDayIndex) renderWord();
+			}, 60 * 1000);
+		}
+
+		icueEvents = {
+			onICUEInitialized: init,
+			onDataUpdated: update,
+		};
+
+		if (typeof iCUE_initialized !== "undefined" && iCUE_initialized) init();
+	</script>
+</body>
+</html>
